@@ -55,15 +55,28 @@ Add topics:
 
 ## Results
 ### Performance Metrics
+# Spacing = 1.0
 | **Metric**              | **Value** |
 |-------------------------|-----------|
 | Average Cross-Track Error | 0.104   |
 | Maximum Cross-Track Error | 0.229   |
 | Smoothness Score         | 10/10     |
 | Cornering Performance    | Excellent |
-
+# Summary
 The average cross-track error of 0.104 indicates good accuracy, meaning the robot stays close to the desired path. The maximum cross-track error of 0.229 shows occasional deviations, though the overall performance remains reliable. The smoothness score of 10/10 confirms the robot's path is smooth with minimal abrupt changes in direction. Cornering performance being excellent reflects the robot’s ability to handle turns efficiently without significant instability or erratic movement. This indicates that the chosen parameters balance responsiveness and stability well for the task at hand.
 
+
+## Reduced Spacing Parameter to 0.4
+To optimize the lawnmower-style survey and enhance coverage, we reduced the spacing between each pass to 0.5. This adjustment allows the robot to take more frequent passes, thereby covering a larger area in less time. By decreasing the spacing, the robot can achieve finer granularity in its path planning, leading to improved efficiency in mapping and survey tasks. Additionally, this modification ensures that the robot can navigate narrower spaces with greater precision, reducing gaps in the coverage and enhancing the overall performance of the lawnmower pattern. 
+
+### Performance Metrics
+# Spacing = 0.4
+| **Metric**              | **Value** |
+|-------------------------|-----------|
+| Average Cross-Track Error | 0.105   |
+| Maximum Cross-Track Error | 0.233   |
+| Smoothness Score         | 10/10     |
+| Cornering Performance    | Excellent |
 
 ### Trajectory Plots
 Plots showing:
@@ -71,11 +84,12 @@ Plots showing:
 2. Trajectory plot.
 3. Velocity profiles.
 
-![Final Result](/results/final_result.png)
+![Final Result](assignments/first_order_boustrophedon_navigator/results/final_result.png)
 
 *(Include additional generated plots in the `results/` directory)*
 
 ## Parameter Tuning Analysis
+# For Spacing = 1.0
 | **Tuning Iteration** | **Kp_linear** | **Kd_linear** | **Kp_angular** | **Kd_angular** | **Average Cross-Track Error** | **Smoothness Score** |
 |----------------------|---------------|---------------|----------------|----------------|-------------------------------|-----------------------|
 | 1                    | 1.0           | 0.1           | 1.0            | 0.1            | 0.99                          | Poor                  |
@@ -85,20 +99,35 @@ Plots showing:
 | 5                    | 7.0           | 0.1           | 7.0            | 0.1            | 0.16                          | Excellent             |
 | 6                    | 7.0           | 0.3           | 7.0            | 0.3            | 0.197                         | No good curves        |
 | 7                    | 7.0           | 0.3           | 7.0            | 0.01           | 0.142                         | Excellent             |
-| 8                    | 7.0           | 0.6           | 8.0            | 0.01           | 0.104                         | Excellent             |***
-| 9                    | 9.0           | 0.8           | 8.0            | 0.01           | 0.102                         | Excellent             |*
+| 8                    | 7.0           | 0.6           | 8.0            | 0.01           | 0.104 *                       | Excellent             |
+| 9                    | 9.0           | 0.8           | 8.0            | 0.01           | 0.102                         | Excellent             |
 | 10                   | 9.5           | 1.0           | 8.0            | 0.01           | 0.097                         | Good but unstable     |
-| 11                   | 9.5           | 0.5           | 8.0            | 0.01           | 0.112                         | Excellent             |*
+| 11                   | 9.5           | 0.5           | 8.0            | 0.01           | 0.112                         | Excellent             |
 | 12                   | 9.5           | 0.8           | 9.0            | 0.01           | 0.108                         | Excellent             |
 | 13                   | 10.0          | 0.8           | 9.0            | 0.01           | 0.062 *                       | Good but unstable     |
 | 14                   | 9.5           | 0.8           | 5.0            | 0.01           | 0.224                         | Smooth but high error |
-| 15                   | 8.0           | 0.8           | 7.0            | 0.01           | 0.137                         | Excellent             |*
+| 15                   | 8.0           | 0.8           | 7.0            | 0.01           | 0.137                         | Excellent             |
+
+
+# For Spacing = 0.4
+| **Tuning Iteration** | **Kp_linear** | **Kd_linear** | **Kp_angular** | **Kd_angular** | **Average Cross-Track Error** | **Smoothness Score** |
+|----------------------|---------------|---------------|----------------|----------------|-------------------------------|-----------------------|
+| 1                    | 7.0           | 0.6           | 9.0            | 0.5            | 0.102                         | Poor                  |
+| 2                    | 9.5           | 1.0           | 8.0            | 0.01           | 0.097                         | Good but unstable     |
+| 3                    | 7.5           | 0.8           | 7.0            | 0.01           | 0.136                         | Poor                  |-
+| 4                    | 9.5           | 0.8           | 9.0            | 0.01           | 0.81                          | Poor                  |
+| 5                    | 10.0          | 0.8           | 9.0            | 0.01           | 0.069                         | Low error, unstable   |
+| 6                    | 9.5           | 0.8           | 5.0            | 0.01           | 0.245                         | Smooth but high error |
+| 7                    | 8.0           | 0.8           | 7.0            | 0.01           | 0.210                         | Poor                  |
+| 8                    | 8.0           | 0.5           | 8.0            | 0.01           | 0.105 *                       | Excellent pattern     |
+
 
 ## Challenges and Solutions
 - **Challenge 1**: Large oscillations with low proportional gains.
   - **Solution**: Incrementally increased `Kp_linear` and `Kp_angular` values.
 - **Challenge 2**: Over-corrections at corners.
   - **Solution**: Adjusted derivative gains to dampen oscillations.
+
 
 ## Analysis Summary:
 
