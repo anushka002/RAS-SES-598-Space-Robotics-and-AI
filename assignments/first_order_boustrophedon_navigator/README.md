@@ -62,13 +62,16 @@ Add topics:
 | Smoothness Score         | 10/10     |
 | Cornering Performance    | Excellent |
 
+The average cross-track error of 0.104 indicates good accuracy, meaning the robot stays close to the desired path. The maximum cross-track error of 0.229 shows occasional deviations, though the overall performance remains reliable. The smoothness score of 10/10 confirms the robot's path is smooth with minimal abrupt changes in direction. Cornering performance being excellent reflects the robot’s ability to handle turns efficiently without significant instability or erratic movement. This indicates that the chosen parameters balance responsiveness and stability well for the task at hand.
+
+
 ### Trajectory Plots
 Plots showing:
 1. Cross-track error over time.
 2. Trajectory plot.
 3. Velocity profiles.
 
-![Trajectory Plot](../results/final_result.png)
+![Trajectory Plot](../assignments/first_order_boustrophedon_navigator/results/final_result.png)
 
 *(Include additional generated plots in the `results/` directory)*
 
@@ -97,10 +100,12 @@ Plots showing:
 - **Challenge 2**: Over-corrections at corners.
   - **Solution**: Adjusted derivative gains to dampen oscillations.
 
+## Analysis Summary:
+
+The parameter tuning analysis for the boustrophedon pattern demonstrates a clear progression in performance as the tuning parameters evolve. The results suggest that, as the proportional (Kp) and derivative (Kd) values for both linear and angular control increase, the system improves in terms of reducing the average cross-track error and enhancing smoothness. Specifically, iteration 9 achieved the best average cross-track error of 0.102 and a smoothness score of 10/10, though it exhibited some instability towards the end of the tuning process. The optimal configuration found in iteration 7, with Kp_linear = 7.0, Kd_linear = 0.3, Kp_angular = 7.0, and Kd_angular = 0.01, provided the lowest average cross-track error of 0.142 and excellent smoothness. However, higher Kp values, such as those in iterations 13 and 14, led to high error despite smoothness improvements.
+
 ## Conclusion
 This project demonstrates the significance of PD tuning in achieving precise and efficient boustrophedon patterns. By systematically analyzing performance metrics and refining parameters, the implemented navigator achieved minimal cross-track error and smooth motion, showcasing practical applications for robotic coverage tasks.
 
 ## References
-- Relevant literature on boustrophedon patterns.
-- ROS2 documentation for controller tuning and visualization tools.
-
+- ROS2 documentation for controller tuning and visualization tools (https://docs.ros.org/en/humble/Tutorials/Beginner-Client-Libraries/Custom-ROS2-Interfaces.html)

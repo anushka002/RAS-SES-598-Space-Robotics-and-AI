@@ -1,0 +1,9 @@
+float64 cross_track_error
+float64 angular_error
+float64 linear_velocity
+float64 angular_velocity
+float64 distance_to_next_waypoint
+float64 completion_percentage
+float64 average_cross_track_error
+float64 max_cross_track_error
+float64 min_cross_track_error
