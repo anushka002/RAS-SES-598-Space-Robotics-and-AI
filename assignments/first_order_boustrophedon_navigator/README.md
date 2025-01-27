@@ -71,7 +71,7 @@ Plots showing:
 2. Trajectory plot.
 3. Velocity profiles.
 
-![Trajectory Plot](../assignments/first_order_boustrophedon_navigator/results/final_result.png)
+![Final Result](/first_order_boustrophedon_navigator/results$/final_result.png)
 
 *(Include additional generated plots in the `results/` directory)*
 
