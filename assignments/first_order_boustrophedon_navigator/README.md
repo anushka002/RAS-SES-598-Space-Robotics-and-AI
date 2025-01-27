@@ -55,28 +55,28 @@ Add topics:
 
 ## Results
 ### Performance Metrics
-# Spacing = 1.0
+### Spacing = 1.0
 | **Metric**              | **Value** |
 |-------------------------|-----------|
 | Average Cross-Track Error | 0.104   |
 | Maximum Cross-Track Error | 0.229   |
 | Smoothness Score         | 10/10     |
 | Cornering Performance    | Excellent |
-# Summary
-The average cross-track error of 0.104 indicates good accuracy, meaning the robot stays close to the desired path. The maximum cross-track error of 0.229 shows occasional deviations, though the overall performance remains reliable. The smoothness score of 10/10 confirms the robot's path is smooth with minimal abrupt changes in direction. Cornering performance being excellent reflects the robot’s ability to handle turns efficiently without significant instability or erratic movement. This indicates that the chosen parameters balance responsiveness and stability well for the task at hand.
-
 
 ## Reduced Spacing Parameter to 0.4
 To optimize the lawnmower-style survey and enhance coverage, we reduced the spacing between each pass to 0.5. This adjustment allows the robot to take more frequent passes, thereby covering a larger area in less time. By decreasing the spacing, the robot can achieve finer granularity in its path planning, leading to improved efficiency in mapping and survey tasks. Additionally, this modification ensures that the robot can navigate narrower spaces with greater precision, reducing gaps in the coverage and enhancing the overall performance of the lawnmower pattern. 
 
 ### Performance Metrics
-# Spacing = 0.4
+### Spacing = 0.4
 | **Metric**              | **Value** |
 |-------------------------|-----------|
 | Average Cross-Track Error | 0.105   |
 | Maximum Cross-Track Error | 0.233   |
 | Smoothness Score         | 10/10     |
 | Cornering Performance    | Excellent |
+
+# Summary
+The average cross-track error of 0.104 indicates good accuracy, meaning the robot stays close to the desired path. The maximum cross-track error of 0.229 shows occasional deviations, though the overall performance remains reliable. The smoothness score of 10/10 confirms the robot's path is smooth with minimal abrupt changes in direction. Cornering performance being excellent reflects the robot’s ability to handle turns efficiently without significant instability or erratic movement. This indicates that the chosen parameters balance responsiveness and stability well for the task at hand.
 
 ### Trajectory Plots
 Plots showing:
