@@ -104,6 +104,40 @@ Plots showing:
 
 The parameter tuning analysis for the boustrophedon pattern demonstrates a clear progression in performance as the tuning parameters evolve. The results suggest that, as the proportional (Kp) and derivative (Kd) values for both linear and angular control increase, the system improves in terms of reducing the average cross-track error and enhancing smoothness. Specifically, iteration 9 achieved the best average cross-track error of 0.102 and a smoothness score of 10/10, though it exhibited some instability towards the end of the tuning process. The optimal configuration found in iteration 7, with Kp_linear = 7.0, Kd_linear = 0.3, Kp_angular = 7.0, and Kd_angular = 0.01, provided the lowest average cross-track error of 0.142 and excellent smoothness. However, higher Kp values, such as those in iterations 13 and 14, led to high error despite smoothness improvements.
 
+## Extra Credits:
+## Custom ROS2 Message for Performance Metrics
+
+This custom ROS2 message type is designed to publish detailed performance metrics for a robotic system. It includes fields for cross-track error, angular error, velocities, distance to the next waypoint, completion percentage, and other relevant metrics to monitor the robot's performance in real-time. The custom message is implemented in a ROS2 node to publish these metrics, providing valuable insights for path planning, navigation, and performance evaluation. This implementation demonstrates the creation of custom ROS2 interfaces and the efficient publishing of real-time data.
+
+## Message Structure
+
+The custom message `PerformanceMetrics` contains the following fields:
+
+- **cross_track_error**: `Float64` – The deviation of the robot from its path.
+- **angular_error**: `Float64` – The difference between the robot's current orientation and its desired orientation.
+- **linear_velocity**: `Float64` – The current linear speed of the robot.
+- **angular_velocity**: `Float64` – The current angular speed (rotation) of the robot.
+- **distance_to_next_waypoint**: `Float64` – The distance to the next target position.
+- **completion_percentage**: `Float64` – The percentage of task completion (e.g., how much of the path or task has been completed).
+- **average_cross_track_error**: `Float64` – The average cross-track error over the course of the task.
+- **max_cross_track_error**: `Float64` – The maximum observed cross-track error during the task.
+- **min_cross_track_error**: `Float64` – The minimum observed cross-track error during the task.
+
+## Usage
+
+1. Define the message type in a `.msg` file.
+2. Implement a publisher node to broadcast the message containing the performance metrics.
+3. Subscribe to the message in other parts of the system to utilize these performance metrics.
+
+## Implementation Details
+
+- The custom message type is created using ROS2 interface tools, and is included in the appropriate ROS2 package.
+- The publisher node will publish performance metrics at regular intervals or when significant changes in robot state occur.
+- Metrics such as cross-track error, velocity, and distance to the next waypoint are updated in real-time based on the robot's sensors and odometry.
+
+This custom message is essential for real-time monitoring, debugging, and performance analysis of robotic navigation tasks.
+
+
 ## Conclusion
 This project demonstrates the significance of PD tuning in achieving precise and efficient boustrophedon patterns. By systematically analyzing performance metrics and refining parameters, the implemented navigator achieved minimal cross-track error and smooth motion, showcasing practical applications for robotic coverage tasks.
 
