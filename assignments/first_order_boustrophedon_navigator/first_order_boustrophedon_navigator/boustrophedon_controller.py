@@ -9,6 +9,7 @@ import math
 from collections import deque
 from std_msgs.msg import Float64
 from rcl_interfaces.msg import SetParametersResult
+from boustrophedon_interfaces.msg import PerformanceMetrics
 
 
 class BoustrophedonController(Node):
@@ -19,14 +20,55 @@ class BoustrophedonController(Node):
         self.declare_parameters(
             namespace='',
             parameters=[
-                ('Kp_linear', 10.0),
-                ('Kd_linear', 0.1),
-                ('Kp_angular', 5.0),
-                ('Kd_angular', 0.2),
+                ('Kp_linear', 7.0),
+                ('Kd_linear', 0.8),
+                ('Kp_angular',8.0),
+                ('Kd_angular', 0.01),
                 ('spacing', 1.0)
             ]
         )
+
         
+        # "--Controller parameters--"
+        # self.declare_parameter('Kp_linear', 10.0)
+        # self.declare_parameter('Kd_linear', 0.1)
+        # self.declare_parameter('Kp_angular', 5.0)
+        # self.declare_parameter('Kd_angular', 0.2)    # Final average cross-track error: 0.289
+
+        # self.declare_parameter('Kp_linear', 8.0) # Proportional gain for linear velocity
+        # self.declare_parameter('Kd_linear', 0.1) # Derivative gain for linear velocity
+        # self.declare_parameter('Kp_angular', 5.0) # Proportional gain for angular velocity
+        # self.declare_parameter('Kd_angular', 0.01) # Derivative gain for angular velocity  # Final average cross-track error: 0.250
+
+        # self.declare_parameter('Kp_linear', 6.0) # Proportional gain for linear velocity
+        # self.declare_parameter('Kd_linear', 0.1) # Derivative gain for linear velocity
+        # self.declare_parameter('Kp_angular', 5.0) # Proportional gain for angular velocity
+        # self.declare_parameter('Kd_angular', 0.01) # Derivative gain for angular velocity  # Final average cross-track error: 0.252
+
+        # self.declare_parameter('Kp_linear', 5.0) # Proportional gain for linear velocity
+        # self.declare_parameter('Kd_linear', 0.1) # Derivative gain for linear velocity
+        # self.declare_parameter('Kp_angular', 6.0) # Proportional gain for angular velocity
+        # self.declare_parameter('Kd_angular', 0.01) # Derivative gain for angular velocity  # Final average cross-track error: 0.185
+
+        # self.declare_parameter('Kp_linear', 3.0) # Proportional gain for linear velocity
+        # self.declare_parameter('Kd_linear', 0.05) # Derivative gain for linear velocity
+        # self.declare_parameter('Kp_angular', 5.0) # Proportional gain for angular velocity
+        # self.declare_parameter('Kd_angular', 0.01) # Derivative gain for angular velocity  # Final average cross-track error: 0.234 but pattern is really good
+
+        # self.declare_parameter('Kp_linear', 3.0) # Proportional gain for linear velocity
+        # self.declare_parameter('Kd_linear', 0.1) # Derivative gain for linear velocity
+        # self.declare_parameter('Kp_angular', 5.0) # Proportional gain for angular velocity
+        # self.declare_parameter('Kd_angular', 0.02) # Derivative gain for angular velocity  # Final average cross-track error: 0.232 but pattern is really
+
+
+        # self.declare_parameter('Kp_linear', 10.0) # Proportional gain for linear velocity
+        # self.declare_parameter('Kd_linear', 0.1) # Derivative gain for linear velocity
+        # self.declare_parameter('Kp_angular', 5.0) # Proportional gain for angular velocity
+        # self.declare_parameter('Kd_angular', 0.01) # Derivative gain for angular velocity  # Final average cross-track error: 0.250 but pattern is best
+
+
+        # 
+
         # Get initial parameter values
         self.Kp_linear = self.get_parameter('Kp_linear').value
         self.Kd_linear = self.get_parameter('Kd_linear').value
@@ -40,6 +82,29 @@ class BoustrophedonController(Node):
         # Create publisher and subscriber
         self.velocity_publisher = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
         self.pose_subscriber = self.create_subscription(Pose, '/turtle1/pose', self.pose_callback, 10)
+
+        '''
+        Extra Credit: Custom ROS2 message type for publishing detailed performance metrics
+
+        # Cross-track error
+        # Current velocity
+        # Distance to next waypoint
+        # Completion percentage
+        # Other relevant metrics:
+
+        cross_track_error
+        angular_error
+        linear_velocity
+        angular_velocity
+        distance_to_next_waypoint
+        completion_percentage
+        average_cross_track_error
+        max_cross_track_error
+        min_cross_track_error
+
+        '''
+
+        self.performance_metrics_publisher = self.create_publisher(PerformanceMetrics,'performance_metrics', 10)
         
         # Lawnmower pattern parameters
         self.waypoints = self.generate_waypoints()
@@ -210,6 +275,9 @@ class BoustrophedonController(Node):
             self.current_waypoint += 1
             self.get_logger().info(f'Reached waypoint {self.current_waypoint}')
 
+        # Publish the Performance Metrics
+        self.publish_metrics(cross_track_error,angular_error,linear_velocity,angular_velocity)
+
     def parameter_callback(self, params):
         """Callback for parameter updates"""
         for param in params:
@@ -232,6 +300,46 @@ class BoustrophedonController(Node):
         
         return SetParametersResult(successful=True)
 
+    '''
+    Extra Credit- Function to Publish Performance Metrics
+
+    '''
+    def publish_metrics(self, cross_track_error, angular_error, linear_velocity, angular_velocity):
+        metrics_msg = PerformanceMetrics()
+
+        metrics_msg.cross_track_error = cross_track_error
+        metrics_msg.angular_error = angular_error
+        metrics_msg.linear_velocity = linear_velocity
+        metrics_msg.angular_velocity = angular_velocity
+
+        
+        # metrics_msg.distance_to_next_waypoint = self.get_distance(
+        #     self.pose.x, self.pose.y,
+        #     self.waypoints[self.current_waypoint][0],
+        #     self.waypoints[self.current_waypoint][1]
+        # )
+            # Ensure the current waypoint is valid before accessing the waypoints list
+        if 0 <= self.current_waypoint < len(self.waypoints):
+            metrics_msg.distance_to_next_waypoint = self.get_distance(
+            self.pose.x, self.pose.y,
+            self.waypoints[self.current_waypoint][0],
+            self.waypoints[self.current_waypoint][1]
+        )
+        else:
+            # If out of bounds, log a warning or handle the error accordingly
+            self.get_logger().warn(f"Invalid waypoint index: {self.current_waypoint}. Skipping distance calculation.")
+            metrics_msg.distance_to_next_waypoint = 0.0  # Default value when the index is invalid
+
+
+        metrics_msg.completion_percentage = (self.current_waypoint / len(self.waypoints)) * 100
+        metrics_msg.average_cross_track_error = (
+            sum(self.cross_track_errors) / len(self.cross_track_errors)
+            if self.cross_track_errors else 0.0
+        )
+        metrics_msg.max_cross_track_error = max(self.cross_track_errors, default=0.0)
+        metrics_msg.min_cross_track_error = min(self.cross_track_errors, default=0.0)
+
+        self.performance_metrics_publisher.publish(metrics_msg)
 
 def main(args=None):
     rclpy.init(args=args)
