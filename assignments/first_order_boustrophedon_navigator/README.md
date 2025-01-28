@@ -293,7 +293,7 @@ The goal was to tune the proportional (`kp`) and derivative (`kd`) gains for bot
 - **Optimal Value**:
   - A value that provided rapid and stable alignment was chosen after iterative testing.
 ---
-###$ 4. **Tuning `kd_angular` (Derivative Gain for Angular Velocity)**
+#### 4. **Tuning `kd_angular` (Derivative Gain for Angular Velocity)**
 - **Impact**:
   - Higher `kd_angular` reduced angular oscillations caused by `kp_angular` but, if set too high, made the robot’s angular corrections sluggish.
   - Lower values led to underdamped oscillations.
