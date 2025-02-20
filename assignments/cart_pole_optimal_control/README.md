@@ -1,7 +1,6 @@
 # Cart-Pole Optimal Control
 This repository This repository contains the code and detailed report for optimizing a Linear Quadratic Regulator (LQR) controller for the cart-pole system under seismic disturbances. The objective is to stabilize the pole while ensuring the cart remains within its physical limits despite external disturbances. This assignment incorporates an earthquake force generator, allowing students to simulate and control systems under seismic conditions, linking to the Virtual Shake Robot covered later in the course. The techniques learned in managing dynamic disturbances and maintaining stability are valuable for optimizing control in space robotics applications, such as Lunar landers and orbital debris removal systems. The goal is to evaluate the performance of the LQR controller and explore improvements using reinforcement learning (extra credit) for enhanced stability and control under external disturbances.
 
----
 ## Objectives:
 
 The goal of this project is to analyze and tune the provided LQR controller to ensure stable operation of the cart-pole system under earthquake-induced disturbances. 
@@ -31,15 +30,173 @@ Additionally, the project involves:
 2. **Performance Analysis**: Measuring stability duration, cart displacement, pendulum deviation, and control effort.
 3. **Experimental Validation**: Running simulations in ROS2 and Gazebo, analyzing results, and documenting findings.
 
-### Extra Credit
-Reinforcement Learning Implementation:
-   - Implement a basic DQN (Deep Q-Network) controller
-   - Train the agent to stabilize the pendulum
-   - Compare performance with the LQR controller
-   - Document training process and results
-   - Create training progress visualizations
-   - Analyze and compare performance with LQR
 ---
+# Submission
+
+## Literature Review  
+Several studies have explored optimal control strategies for the inverted pendulum system, particularly using **Linear Quadratic Regulator (LQR)** and **Reinforcement Learning (RL)** approaches. Prior work has demonstrated that LQR provides a reliable, mathematically optimal method for stabilizing inverted pendulums, while RL offers adaptive learning-based control. This project builds upon these concepts by systematically tuning LQR parameters and experimenting with RL-based control under seismic disturbances.
+
+- The assignment is based on the problem formalism here: https://underactuated.mit.edu/acrobot.html#cart_pole
+![image](https://github.com/user-attachments/assets/b9fef232-ee9d-44f6-98c2-ecb5007744e8)    ![image](https://github.com/user-attachments/assets/44fd7e5d-2fe3-4f93-894e-dcc876634442)
+
+
+### 1. Understanding Q and R Matrices in LQR
+
+In **Linear Quadratic Regulator (LQR)**, we define a **cost function**:
+```
+J = ∫ (x^T Q x + u^T R u) dt
+```
+where:
+- **x** is the state vector (e.g., cart position, cart velocity, pole angle, pole angular velocity).
+- **u** is the control input (e.g., force applied to the cart).
+- **Q** is a **state-cost matrix**, penalizing deviation from the desired state.
+- **R** is a **control-cost matrix**, penalizing excessive control effort.
+#### **Objective:**
+- **Higher values in Q** → Penalize large deviations in state variables (better tracking).
+- **Higher values in R** → Penalize excessive control effort (reduces actuator strain).
+- **Balanced tuning ensures stable control while avoiding excessive energy consumption.**
+---
+### 2. Choosing the Initial Q and R Matrices
+#### **State Vector for the Cart-Pole System**
+```
+x = [ x_cart  v_cart  θ_pole  ω_pole ]^T
+```
+Each state variable represents:
+1. **x_cart** → Position of the cart  
+2. **v_cart** → Velocity of the cart  
+3. **θ_pole** → Angle of the pole (from upright)  
+4. **ω_pole** → Angular velocity of the pole  
+A **good initial choice** for the Q matrix can be:
+```
+Q = [ q1  0   0   0  
+      0  q2  0   0  
+      0   0  q3  0  
+      0   0   0  q4 ]
+```
+where:
+- **q1** → Penalizes cart displacement (higher value to keep the cart near the center).
+- **q2** → Penalizes cart velocity (moderate value to prevent excessive motion).
+- **q3** → Penalizes pole angle deviation (higher value for fast recovery).
+- **q4** → Penalizes pole angular velocity (moderate value for smoother motion).
+### **Selecting the R Matrix**
+```
+R = [ r ]
+```
+- **A larger R** → Encourages less aggressive control input (reducing motor strain).
+- **A smaller R** → Allows more aggressive control actions but may cause oscillations.
+- **Typical range**: Start with `r = 1` and adjust based on response.
+
+---
+## Tuning Q and R Matrices for LQR in a Cart-Pole System
+
+### Step 1: Start with a Default Setup
+```
+Q = [ 1  0   0   0  
+      0  1   0   0  
+      0  0  10   0  
+      0  0   0   1  ]
+
+R = [1]
+```
+
+### Step 2: Prioritize Pole Stabilization First
+- Increase `q3` (pole angle penalty) significantly, e.g., `q3 = 50`.
+- Increase `q4` slightly to avoid excessive oscillation.
+
+### Step 3: Ensure Smooth Cart Motion
+- Adjust `q1` and `q2` to prevent excessive movement.
+- Keep them lower than `q3` (e.g., `q1 = 1, q2 = 1`).
+
+### Step 4: Fine-Tune Control Effort (R Value)
+- If the system is oscillating too much → Increase `R`.
+- If control is too slow → Decrease `R`.
+
+
+## Experimental Tuning Approach
+
+### *Step 1: Simulate with Default Q and R*
+- Check if the system stabilizes and how much control force is required.
+
+### *Step 2: Increase Q Values for Better Tracking*
+- If the pole is too slow to recover → Increase `q3`.
+- If the cart moves too much → Increase `q1`.
+- If oscillations are too high → Increase `q4`.
+
+### *Step 3: Adjust R to Limit Aggressive Control*
+- If the control effort is too high → Increase `R` (e.g., `R = 10`).
+- If the response is sluggish → Decrease `R` (e.g., `R = 0.1`).
+
+### Tuning Parameters Table
+
+The following table summarizes the tuning parameters used for the LQR controller and their corresponding effects on performance:
+
+| Q Matrix Weights        | R Value | Max Pole Angle Deviation | RMS Cart Position Error | Peak Control Force (Control Effort) | Recovery Time | Stability       | Overall Performance | Notes |
+|-------------------------|---------|--------------------------|-------------------------|-------------------------|---------------|----------------|----------------------|-------|
+| [1, 1, 10, 10] (default)| 0.1     | -22.1                    | 2.5                    | 85.21                   | 12            | Below average       | Needs Improvement   |Default parameters, Poor performance |
+| [5, 1, 15, 10]         |  0.1     | 45.4                     | 2.48                    | 73.85                   | 12            | Below average       | Needs Improvement   |Poor performance |
+| [10, 1, 10, 10]         | 0.1    | 64.44                     | 2.34                     | 75.38                  | 3.08         | Below Average         |Needs Improvement           |Default parameters, baseline performance |
+| [50, 2, 50, 10]        | 0.1    | 54.16                 | 0.622                     | 71.72               | Very Short    | Little aggressive | Fair          |Fair performance |
+| [30, 5, 30, 10]         | 0.05     | 10.63                 | 0.14                | 75.05                | 0.2        | Great       | Great                  |Great performance |
+| [30, 5, 30, 10]         | 0.02    | 23.76                      | 0.354                     | 119.36                    | 0.586         | Well Stable         | Very Good           |Great performance  |
+| [30, 5, 30, 10] ✅          | 0.01 ✅     | 6.28                 | 0.073                | 74.92                  | Very Short    | Best ✅            | Excellent Stability           |Best performance, Optimal ✅  |
+| [30, 5, 30, 10]         | 0.005    | 24.6                  | 2.35                 | 59.83               | 0.647            | Below Average | Needs Improvement          |Very poor performance |
+
+| [30, 5, 30, 10]         | 0.1    | 24.6                  | 2.35                 | 59.83               | 0.647            | Below Average | Needs Improvement          |Poor performance |
+
+
+### Comparison and Selection of the Best Optimal Solution
+Based on the results from the above table, the following parameter set was found to provide the best performance behaviour by the system:
+```
+✅ Q = [30, 5, 30, 10]
+✅ R = [0.005]
+```
+### Image Output:
+![final_result](https://github.com/user-attachments/assets/8c530e98-391c-49bc-a1a9-67136bceb787)
+
+### Video Output 
+
+![BEST](https://github.com/user-attachments/assets/55e6f3fc-d5f4-43b4-8934-5d6404c4262b)
+
+### Plots
+
+
+
+This configuration ensures:
+- The pendulum remains stable under seismic disturbances.
+- The cart stays within the physical boundaries with minimal constraint violations.
+- Control effort is optimized for energy efficiency.
+
+✅ **Fast stabilization** of the pole  
+✅ **Minimal cart movement**  
+✅ **Moderate control effort** to avoid excessive motor strain  
+
+
+
+---
+## Results and Discussion
+
+- **Tuning Q and R is an iterative process**: Start with reasonable values and refine them based on simulations.
+- **Focus on pole stabilization first** by increasing `q3` and `q4`.
+- **Ensure smooth cart motion** by keeping `q1` and `q2` moderate.
+- **Adjust `R` to balance aggressive control and actuator effort**.
+
+After implementing and tuning the LQR controller, the following results were observed:
+
+Stability: The pendulum remained upright under varying seismic disturbances.
+Constraint Satisfaction: The cart remained within the designated boundary limits.
+Control Effort: The controller minimized energy consumption while maintaining system performance.
+
+
+## Conclusion
+The LQR controller was successfully tuned to achieve robust performance in stabilizing the cart-pole system under seismic disturbances. 
+By carefully tuning the weight parameters in the cost function, we can achieve a well-balanced control strategy for the cart-pole system. 
+Prioritizing pole stabilization ensures the system remains upright, while adjusting cart motion parameters prevents excessive movement. 
+Finally, fine-tuning the control effort (`R`) helps strike a balance between responsiveness and stability. Iteratively refining these values based on system behavior will lead to an optimal control policy that maintains stability with minimal energy consumption.
+The optimized LQR controller achieved a good trade-off between system stability, constraint satisfaction, and control efficiency.
+
+---
+
+## Help / Resources
 
 ## System Description
 
@@ -58,7 +215,6 @@ The system includes an earthquake force generator that introduces external distu
 - Random variations in amplitude and phase
 - Additional Gaussian noise
 
----
 ## Implementation
 
 ### Controller Description
@@ -92,15 +248,15 @@ The earthquake generator (`earthquake_force_generator.py`) provides realistic di
 ## Getting Started
 
 ### Prerequisites
-- ROS2 Humble or Jazzy
-- Gazebo Garden
-- Python 3.8+
-- Required Python packages: numpy, scipy
+- ROS2 Humble or Jazzy ✅
+- Gazebo Garden ✅
+- Python 3.8+ ✅
+- Required Python packages: numpy, scipy ✅
 
 #### Installation Commands
 ```bash
 # Set ROS_DISTRO as per your configuration
-export ROS_DISTRO=humble
+export ROS_DISTRO=jazzy ✅
 
 # Install ROS2 packages
 sudo apt update
@@ -193,104 +349,6 @@ Two types of forces are visualized:
 Arrow lengths are proportional to force magnitudes.
 ---
 
-## Literature Review  
-Several studies have explored optimal control strategies for the inverted pendulum system, particularly using **Linear Quadratic Regulator (LQR)** and **Reinforcement Learning (RL)** approaches. Prior work has demonstrated that LQR provides a reliable, mathematically optimal method for stabilizing inverted pendulums, while RL offers adaptive learning-based control. This project builds upon these concepts by systematically tuning LQR parameters and experimenting with RL-based control under seismic disturbances.
-
-- The assignment is based on the problem formalism here: https://underactuated.mit.edu/acrobot.html#cart_pole
--
--
-
----
-## Tuning Parameters
-
-### Tuning Parameters Table
-
-The following table summarizes the tuning parameters used for the LQR controller and their corresponding effects on performance:
-
-| Q Matrix Weights        | R Value | Stability   | Cart Constraint Violation | Control Effort |
-|-------------------------|---------|-------------|---------------------------|----------------|
-| [1, 1, 10, 10] (Default)| 0.1     | Moderate    | High                      | Moderate       |
-| [5, 1, 15, 10]          | 0.1     | Improved    | Moderate                  | High           |
-| [5, 2, 20, 15]          | 0.05    | Best        | Low                       | Higher         |
-| [10, 2, 30, 20]         | 0.02    | Overaggressive | Low                    | Very High      |
-| [1, 1, 10, 10]          | 0.1     | Moderate    | High                      | Moderate       |
-| [5, 1, 15, 10]          | 0.1     | Improved    | Moderate                  | High           |
-| [5, 2, 20, 15]          | 0.05    | Best        | Low                       | Higher         |
-| [10, 2, 30, 20]         | 0.02    | Overaggressive | Low                    | Very High      |
-
-
-
-### Comparison and Selection of the Best Optimal Solution
-Based on the results from the above table, the following parameter set was found to provide the best performance behaviour by the system:
-```
-Q = 
-R = 
-```
-This configuration ensures:
-
-- The pendulum remains stable under seismic disturbances.
-- The cart stays within the physical boundaries with minimal constraint violations.
-- Control effort is optimized for energy efficiency.
-
-## Results and Discussion
-After implementing and tuning the LQR controller, the following results were observed:
-
-Stability: The pendulum remained upright under varying seismic disturbances.
-Constraint Satisfaction: The cart remained within the designated boundary limits.
-Control Effort: The controller minimized energy consumption while maintaining system performance.
-
-
-
-
-## Extra Credits
---The reinforcement learning (DQN) controller, while providing smoother control, had slower response times and required significant training.
-
-
-## Conclusion
-The LQR controller was successfully tuned to achieve robust performance in stabilizing the cart-pole system under seismic disturbances. The optimized controller achieved a good trade-off between system stability, constraint satisfaction, and control efficiency. While reinforcement learning showed potential for smoother control, it was slower and required more training time. Therefore, the LQR controller remains the preferred method for this task.
-
-
-
-
-
-
-
-
-
----
----
-## Analysis Requirements
-
-### Performance Metrics
-Students should analyze:
-1. Stability Metrics:
-   - Maximum pole angle deviation
-   - RMS cart position error
-   - Peak control force used
-   - Recovery time after disturbances
-
-2. System Constraints:
-   - Cart position limit: ±2.5m
-   - Control rate: 50Hz
-   - Pole angle stability
-   - Control effort efficiency
-
-### Analysis Guidelines
-1. Baseline Performance:
-   - Document system behavior with default parameters
-   - Identify key performance bottlenecks
-   - Analyze disturbance effects
-
-2. Parameter Effects:
-   - Analyze how Q matrix weights affect different states
-   - Study R value's impact on control aggressiveness
-   - Document trade-offs between objectives
-
-3. Disturbance Response:
-   - Characterize system response to different disturbance frequencies
-   - Analyze recovery behavior
-   - Study control effort distribution
-
 ## Evaluation Criteria
 ### Core Assignment (100 points)
 1. Analysis Quality (40 points)
@@ -308,8 +366,18 @@ Students should analyze:
    - Quality of data and plots
    - Thoroughness of discussion
 
-### Extra Credit (up to 30 points)
+
+### Extra Credit
+Reinforcement Learning Implementation:
+   - Implement a basic DQN (Deep Q-Network) controller
+   - Train the agent to stabilize the pendulum
+   - Compare performance with the LQR controller
+   - Document training process and results
+   - Create training progress visualizations
+   - Analyze and compare performance with LQR
 - Reinforcement Learning Implementation (30 points)
+
+### Extra Credit (up to 30 points)
 
 ## Tips for Success
 1. Start with understanding the existing controller behavior
