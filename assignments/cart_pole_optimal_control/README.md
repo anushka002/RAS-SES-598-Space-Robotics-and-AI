@@ -138,7 +138,7 @@ The following table summarizes the tuning parameters used for the LQR controller
 | [50, 2, 50, 10]        | 0.1    | 54.16                 | 0.622                     | 71.72               | Very Short    | Little aggressive | Fair          |Fair performance |
 | [30, 5, 30, 10]         | 0.05     | 10.63                 | 0.14                | 75.05                | 0.2        | Great       | Great                  |Great performance |
 | [30, 5, 30, 10]         | 0.02    | 23.76                      | 0.354                     | 119.36                    | 0.586         | Well Stable         | Very Good           |Great performance  |
-| [30, 5, 30, 10] ✅          | 0.01 ✅     | 6.28                 | 0.073                | 74.92                  | Very Short    | Best ✅            | Excellent Stability           |Best performance, Optimal ✅  |
+| [30, 5, 30, 10] ✅          | 0.01 ✅     | 6.28                 | 0.073                | 67.09                  | Very Short    | Best ✅            | Excellent Stability           |Best performance, Optimal ✅  |
 | [30, 5, 30, 10]         | 0.005    | 24.6                  | 2.35                 | 109.83               | 0.647            | Below Average | Needs Improvement          |Very poor performance |
 
 | [30, 5, 30, 10]         | 0.1    | 24.6                  | 2.35                 | 59.83               | 0.647            | Below Average | Needs Improvement          |Poor performance |
