@@ -159,6 +159,19 @@ Based on the results from the above table, the following parameter set was found
 
 ### Plots
 
+Control Force plot:
+
+![plot4](https://github.com/user-attachments/assets/b03daf32-0ac4-4842-9036-a7e63f374ff5)
+
+Pole Angle plot:
+
+![plot3](https://github.com/user-attachments/assets/da02718c-5750-4adc-b913-293ad561ff02)
+
+Cart Position plot:
+
+![plot1](https://github.com/user-attachments/assets/e3c7d00a-fba7-430e-84c1-e49894ddf1d4)
+
+
 
 
 This configuration ensures:
