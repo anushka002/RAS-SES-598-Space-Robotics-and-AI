@@ -1,5 +1,5 @@
 # Cart-Pole Optimal Control
-This repository This repository contains the code and detailed report for optimizing a Linear Quadratic Regulator (LQR) controller for the cart-pole system under seismic disturbances. The objective is to stabilize the pole while ensuring the cart remains within its physical limits despite external disturbances. This assignment incorporates an earthquake force generator, allowing students to simulate and control systems under seismic conditions, linking to the Virtual Shake Robot covered later in the course. The techniques learned in managing dynamic disturbances and maintaining stability are valuable for optimizing control in space robotics applications, such as Lunar landers and orbital debris removal systems. The goal is to evaluate the performance of the LQR controller and explore improvements using reinforcement learning (extra credit) for enhanced stability and control under external disturbances.
+This repository contains the code and detailed report for optimizing a Linear Quadratic Regulator (LQR) controller for the cart-pole system under seismic disturbances. The objective is to stabilize the pole while ensuring the cart remains within its physical limits despite external disturbances. This assignment incorporates an earthquake force generator, allowing students to simulate and control systems under seismic conditions, linking to the Virtual Shake Robot covered later in the course. The techniques learned in managing dynamic disturbances and maintaining stability are valuable for optimizing control in space robotics applications, such as Lunar landers and orbital debris removal systems. The goal is to evaluate the performance of the LQR controller and explore improvements using reinforcement learning (extra credit) for enhanced stability and control under external disturbances.
 
 ## Objectives:
 
@@ -37,7 +37,14 @@ Additionally, the project involves:
 Several studies have explored optimal control strategies for the inverted pendulum system, particularly using **Linear Quadratic Regulator (LQR)** and **Reinforcement Learning (RL)** approaches. Prior work has demonstrated that LQR provides a reliable, mathematically optimal method for stabilizing inverted pendulums, while RL offers adaptive learning-based control. This project builds upon these concepts by systematically tuning LQR parameters and experimenting with RL-based control under seismic disturbances.
 
 - The assignment is based on the problem formalism here: https://underactuated.mit.edu/acrobot.html#cart_pole
-![image](https://github.com/user-attachments/assets/b9fef232-ee9d-44f6-98c2-ecb5007744e8)    ![image](https://github.com/user-attachments/assets/44fd7e5d-2fe3-4f93-894e-dcc876634442)
+
+Experimental Setup:
+
+![image](https://github.com/user-attachments/assets/b9fef232-ee9d-44f6-98c2-ecb5007744e8)
+
+Diagram:
+
+![image](https://github.com/user-attachments/assets/44fd7e5d-2fe3-4f93-894e-dcc876634442)
 
 
 ### 1. Understanding Q and R Matrices in LQR
