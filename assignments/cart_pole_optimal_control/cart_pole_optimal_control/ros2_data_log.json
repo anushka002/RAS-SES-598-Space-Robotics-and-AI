@@ -1,0 +1,12 @@
+{
+    "cart_position": -2.3713317926371333,
+    "cart_velocity": 0.0,
+    "cart_force": -33.9766159820673,
+    "earthquake_force": 17.85074908869979,
+    "pole_angle": 11.928835205539635,
+    "pole_angular_velocity": 0.0,
+    "recovery_time": 3.083,
+    "max_pole_angle_deviation": 53.60981902249542,
+    "max_cart_position_error": 2.3483698196288967,
+    "max_cart_force": 75.38142171767531
+}
