@@ -147,7 +147,6 @@ The following table summarizes the tuning parameters used for the LQR controller
 | [30, 5, 30, 10]         | 0.02    | 23.76                      | 0.354                     | 119.36                    | 0.586         | Well Stable         | Very Good           |Great performance  |
 | [30, 5, 30, 10] ✅          | 0.01 ✅     | 6.28                 | 0.073                | 67.09                  | Very Short    | Best ✅            | Excellent Stability           |Best performance, Optimal ✅  |
 | [30, 5, 30, 10]         | 0.005    | 24.6                  | 2.35                 | 109.83               | 0.647            | Below Average | Needs Improvement          |Very poor performance |
-
 | [30, 5, 30, 10]         | 0.1    | 24.6                  | 2.35                 | 59.83               | 0.647            | Below Average | Needs Improvement          |Poor performance |
 
 
@@ -176,9 +175,7 @@ Pole Angle plot:
 
 Cart Position plot:
 
-![plot1](https://github.com/user-attachments/assets/e3c7d00a-fba7-430e-84c1-e49894ddf1d4)
-
-
+![plot](https://github.com/user-attachments/assets/ed9fd3a9-1a14-4716-a124-efd7c133c4c2)
 
 
 This configuration ensures:
