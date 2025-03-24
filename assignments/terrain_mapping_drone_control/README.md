@@ -173,6 +173,19 @@ ros2 launch terrain_mapping_drone_control cylinder_landing.launch.py
 ## Extra credit -- 3D reconstruction (50 points)
 Use RTAB-Map or a SLAM ecosystem of your choice to map both rocks, and export the world as a mesh file, and upload to your repo. Use git large file system (LFS) if needed. 
 
+
+
+## Methodology
+
+
+
+
+
+
+
+
+
+
 ## License
 
 This assignment is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0). 
